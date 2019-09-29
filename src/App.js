@@ -1,303 +1,205 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import './App.css';
 import Ingredient from './components/Ingredient';
 import Favourites from './components/Favourites';
 
-class App extends Component {
-  constructor (props) {
-    super (props)
-    this.state = {
-      loading: false,
-      data: null,
-      input: '',
+function App() {
+  const toggleButton = React.useRef(null);
+  // const initialArr = JSON.stringify(localStorage.getItem('drinksTesting')) || 0
+
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState(null)
+  const [input, setInput] = useState('')
+  const [item, setItem] = useState('')
+  const [toggleBtns, setToggleBtns] = useState(null)
+  const [favourites, setFavourites] = useState([])
+  const favsLS = localStorage.getItem('drinks')
+
+  useEffect(() => {
+    if (favsLS && favsLS.length > 15) {
+      console.log('1')
+      setFavourites(JSON.parse(favsLS))
+    } else { console.log('2') }
+  }, [item])
+
+  useEffect(() => {
+    setFavourites(favourites.filter(Boolean))
+    console.log(item.id)
+    if (!JSON.stringify(favourites).includes(item.id)) {
+      setFavourites(favourites => [...favourites, item])
+      console.log('1')
+    } else {
+      console.log(Object.keys(favourites))
+
+      favourites.forEach((drink, index) => {
+        let favs = favourites
+        if (item.id === drink.id) {
+          favs.splice(index, 1)
+          console.log(favs)
+          setFavourites(favs)
+        }
+      }
+      )
+    }
+
+    // console.log(favourites)
+
+  }, [item])
+
+  let favStorage = []
+  useEffect(() => {
+    // console.log('Bang! FAV! ' + favourites)
+    localStorage.setItem('drinks', JSON.stringify(favourites));
+
+    console.log(favourites)
+    favStorage = favourites
+    console.log(favStorage)
+  }, [favourites, loading])
+
+  // useEffect(() => {
+  // setToggleBtns({ [item.id]: ![item.id] })
+  // console.log(toggleBtns)
+  // }, [item])
+
+  const toggle = (itemID) => {
+
+    // if localstate includes id of e.target.value display x
+    //if ()
+    // console.log(e.target.value)
+    // toggleButton.current.value()
+    console.log('hello from toggle')
+    // toggleButton.current.focus()
+    // setToggleBtns({ [itemID]: !toggleBtns })
+    // console.log('togBUT ' + JSON.stringify(toggleBtns))
+    setLoading(!loading)
+
+  }
+
+  const add = (itemID, name, image) => {
+    setItem({ id: itemID, name: name, image: image })
+    if (!JSON.stringify(favourites).includes(item.id)) {
+      setFavourites(favourites => [...favourites, item])
     }
   }
 
-  // componentDidMount () {
-  //   console.log(this.state)
-  //   let favs = JSON.parse( localStorage.getItem('drinks') );
-  //   favs.forEach((drink, index) => {
-  //     this.setState({
-  //       [drink.id]: true,
-  //     })
-  //   } );
-  //   console.log(this.state)
-  // }
-
-  handleChange = (e) => {
-    this.setState({input: e.target.value})
+  const remove = (itemID, name, image) => {
+    setItem({ id: itemID, name: name, image: image })
+    if (JSON.stringify(favourites).includes(itemID)) {
+      favourites.forEach((drink, index) => {
+        if (itemID === drink.id) {
+          favourites.splice(index, 1);
+        }
+      });
+    }
+    console.log(favourites)
   }
 
 
-  checkLocal = (idDrink) => {
-    // console.log(idDrink)
-    // let favs = JSON.parse( localStorage.getItem('drinks') );
-    // favs.forEach((drink, index) => {
-    //   if (drink.id === idDrink ) {
-    //       return true
-    //   } else {
-    //       return false
-    //   }
-        
-      // this.setState({
-      //   [idDrink]: true,
-      // })
-    
-  
+  const handleChange = (e) => {
+    setInput(e.target.value)
   }
 
-  handleSubmit = async e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    this.setState({
-      loading: true,
-    })
-    let cocktail = this.state.input;
-    const res = await fetch (`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktail}`)
+    setLoading(true)
+    let cocktail = input;
+    const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktail}`)
     const data = await res.json()
 
-    this.setState({
-      loading: false,
-      data: data.drinks,
-      input: '',
-    })
-
-
-       // this.setState({drink.idDrink: false}))
-
-    console.log(this.state)
+    setData(data.drinks)
+    setInput('')
+    setLoading(false)
   }
 
-
-
-//      toggleLocal = (itemID, name, image) => {
-// this.setState({
-//       [itemID]: !this.state[itemID],
-//       itemID: itemID
-//     });
-
-// //console.log(this.checkDB(itemID))
-
-//     let drinkObj = {
-//       id: itemID,
-//       name: name,
-//       image: image,
-//     }
-
-//       const drinks = this.getFromDB();
-
-// if (this.state[itemID]) {
-//     // Add the new array into the localstorage
-//       drinks.push(drinkObj);
-// } else {
-//     // Removes element from the Local Storage
-//           drinks.forEach((drink, index) => {
-//                     if(itemID === drink.id) {
-//                           drinks.splice(index, 1);
-//                     } 
-//                 } );
-//        }
-//       localStorage.setItem('drinks', JSON.stringify(drinks) );
-//     }
-    
-    getFromDB() {
-      let drinks;
-      // Check from localstorage
-
-      if(localStorage.getItem('drinks') === null) {
-           drinks = [];
-      } else {
-           drinks = JSON.parse( localStorage.getItem('drinks') );
-      }
-      return drinks;
- }
-
-    
-
-    
-
-    checkDB = (itemID) => {
-      const drinks = JSON.parse( localStorage.getItem('drinks') );
-    //   favs.forEach((drink) => {
-    //     if(itemID === drink.id) {
-    //           console.log('true!') ;
-    //   } else { console.log('false!')  }
-    // })
-console.log(drinks)
-
-if ((JSON.stringify(drinks).includes(itemID)))
-console.log("qwertyuiop")
-  }
-//FAVOURITES
-
-remove = (itemID) => {
-  const drinks = JSON.parse(localStorage.getItem('drinks'))
-
-  if ((JSON.stringify(drinks).includes(itemID))) {
-
-    drinks.forEach((drink, index) => {
-        if(itemID === drink.id) {
-              drinks.splice(index, 1);
-        } 
-    } );
-  
-      localStorage.setItem('drinks', JSON.stringify(drinks) );
-  }
-  
-  
- 
-}
-
-add = (itemID, name, image) => {
-  const drinks = this.getFromDB();
-  this.setState({
-          [itemID]: JSON.stringify(drinks).includes(itemID),
-          //itemID: itemID
-        });
-
-        console.log(this.state[itemID])
-  
-  let drinkObj = {
-    id: itemID,
-    name: name,
-    image: image,
-  }
-  if ((!JSON.stringify(drinks).includes(itemID)) && (!this.state[itemID])) {
-
-  drinks.push(drinkObj);
-
-  localStorage.setItem('drinks', JSON.stringify(drinks) );
-}
-}
-
-toggle = (itemID, name, image) => {
-  const drinks = JSON.parse(localStorage.getItem('drinks'))
-  if ((!JSON.stringify(drinks).includes(itemID))) {
-this.setState({
-  [itemID]: !this.state[itemID],
-  //itemID: itemID,
-}, () => {
-  this.add(itemID)
-})
-  }
-console.log(this.state)
-  // if ((JSON.stringify(drinks).includes(itemID))) {
-  //     return true } else { return false }
-}
-
-// add = (drink) => {
-//   const drinks = JSON.parse(localStorage.getItem('drinks'))
-
-//   this.drinks.push(drink);
-  
-//   // Add the new array into the localstorage
-//   localStorage.setItem('drinks', JSON.stringify(drinks) );
-// }
-
-
-
-
-
-
-
-
-  // Local storage & (+/-) button :: recipe modal :: refactor :: 
-  
-  render() {
-   const {data} = this.state
-
-    return (
-      <Router>
+  return (
+    <Router>
       <div className="app">
         <header>
           <h1>Cocktail Finder</h1>
           <span><Link to='/'>Search by Name</Link> |{' '}
-          <Link to='/ingredient'>Search by Ingredient</Link> |{' '}
-          <Link to='/favourites'>Favourites</Link> </span>
+            <Link to='/ingredient'>Search by Ingredient</Link> |{' '}
+            <Link to='/favourites'>Favourites</Link> </span>
 
         </header>
 
-
         <Route exact path='/' render={props => (
 
+          <div className="page">
+            <div className="field">
+              <h3>Search for a cocktail</h3>
+              <br />
+              <form onSubmit={handleSubmit}>
+                <input
+                  placeholder={'Enter...'}
+                  value={input}
+                  onChange={handleChange}
+                />
+                <input type="submit" value="Submit" />
+              </form>
+              <div className="cocktails">
+                <br /> <br />
+                {data ? data.map((item, i) => (
+                  <div key={item.idDrink} className="card">
+                    <br />
+                    <h3>{item.strDrink}</h3>
+                    <br />
+                    <div>
+                      <button onClick={() => setItem({ id: item.idDrink, name: item.strDrink, image: item.strDrinkThumb })}>setItem</button>
+                      {/* <button onClick={() => add(item.idDrink, item.strDrink, item.strDrinkThumb)}>ADD</button>
+                      <button onClick={() => remove(item.idDrink, item.strDrink, item.strDrinkThumb)}>REMOVE</button> */}
+                      <button
+                        className="fav-btn"
+                        ref={toggleButton}
+                        onClick={() => {
+                          setItem({ id: item.idDrink, name: item.strDrink, image: item.strDrinkThumb });
+                          toggle(item.idDrink)
+                        }}
+                      >{((JSON.stringify(favourites).includes(item.idDrink)) ? 'x' : '+')}{(loading ? 'L' : '!L')}</button>
+                      <p>!!!{[item.idDrink]}</p>
 
-        <div className="page">
-          <div className="field">
-            <h3>Search for a cocktail</h3>
-            <br/>
-            <form onSubmit={this.handleSubmit.bind(this)}>
-            <input
-              placeholder={'Enter...'}
-              value={this.state.input}
-              onChange={this.handleChange.bind(this)}
-            />
-              <input type="submit" value="Submit"/>
-            </form>
-            <div className="cocktails">
-              <br/> <br/>
-            {data ? data.map((item, i) => (
-              <div key={item.idDrink} className="card">
-              <br/> 
-                <h3>{item.strDrink}</h3>
-                <br/>
-                <div>
-                  <button onClick={() => this.add(item.idDrink, item.strDrink, item.strDrinkThumb)}>ADD</button>
-                  <button onClick={() => this.remove(item.idDrink, item.strDrink, item.strDrinkThumb)}>REMOVE</button>
-                  <button className="fav-btn" onClick={() => this.toggle(item.idDrink, item.strDrink, item.strDrinkThumb)}>{(this.state[item.idDrink] ? 'x' : '+')}</button>
-                  <p>!!!{this.state[item.idDrink]}</p>
-                  {/* <button onClick={() => this.toggleLocal(item.idDrink, item.strDrink, item.strDrinkThumb)}
-                                   className="fav-btn">{this.state[item.idDrink] ? 'x' : '+'} 
-                  </button> */}
-                 
-                <img className="cocktailImg" src={item.strDrinkThumb} alt=""/>
-                </div>
-                <br/>
-                <br/>
-                <h4>Ingredients:</h4>
-                <p>{ item.strIngredient1 } {item.strMeasure1} </p>
-                <p>{ item.strIngredient2 } {item.strMeasure2} </p>
-                <p>{ item.strIngredient3 } {item.strMeasure3} </p>
-                <p>{ item.strIngredient4 } {item.strMeasure4} </p>
-                <p>{ item.strIngredient5 } {item.strMeasure5} </p>
-                <p>{ item.strIngredient6 } {item.strMeasure6} </p>
-                <p>{ item.strIngredient7 } {item.strMeasure7} </p>
-                <p>{ item.strIngredient8 } {item.strMeasure8} </p>
-                <p>{ item.strIngredient9 } {item.strMeasure9} </p>
-                <p>{ item.strIngredient10 } {item.strMeasure10} </p>
-                <p>{ item.strIngredient11 } {item.strMeasure11} </p>
-                <p>{ item.strIngredient12 } {item.strMeasure12} </p>
-                
-                <br/>
-                <h4>Glass: </h4><span>{item.strGlass}</span>
-                <br/>
-                <br/>
-                <h4>Instructions:</h4>
-                <p>{ item.strInstructions}</p>
-              <br/><br/><br/> 
+                      <img className="cocktailImg" src={item.strDrinkThumb} alt="" />
+                    </div>
+                    <br />
+                    <br />
+                    <h4>Ingredients:</h4>
+                    <p>{item.strIngredient1} {item.strMeasure1} </p>
+                    <p>{item.strIngredient2} {item.strMeasure2} </p>
+                    <p>{item.strIngredient3} {item.strMeasure3} </p>
+                    <p>{item.strIngredient4} {item.strMeasure4} </p>
+                    <p>{item.strIngredient5} {item.strMeasure5} </p>
+                    <p>{item.strIngredient6} {item.strMeasure6} </p>
+                    <p>{item.strIngredient7} {item.strMeasure7} </p>
+                    <p>{item.strIngredient8} {item.strMeasure8} </p>
+                    <p>{item.strIngredient9} {item.strMeasure9} </p>
+                    <p>{item.strIngredient10} {item.strMeasure10} </p>
+                    <p>{item.strIngredient11} {item.strMeasure11} </p>
+                    <p>{item.strIngredient12} {item.strMeasure12} </p>
+
+                    <br />
+                    <h4>Glass: </h4> <span>{item.strGlass}</span>
+                    <br />
+                    <br />
+                    <h4>Instructions:</h4>
+                    <p>{item.strInstructions}</p>
+                    <br /> <br /> <br />
+                  </div>
+                )) : ''}
               </div>
-            )) : ''}
             </div>
           </div>
-        </div>
-
-
-        
-
-
         )} />
-
-
 
         <Route path='/ingredient' component={Ingredient} />
         <Route path='/favourites' render={props => (
 
-            <Favourites id={this.state.itemID} name={this.state.localName} image={this.state.localImage} />
-          )} />
+          <Favourites id={item} />
+        )} />
         <footer><h6>Powered by TheCocktailDB API</h6></footer>
       </div>
-      </Router>
-    )
-  }
+    </Router>
+  )
+
 }
 
 export default App
