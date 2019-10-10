@@ -38,17 +38,12 @@ function App() {
     localStorage.setItem("drinks", JSON.stringify(favourites));
   }, [favourites]);
 
-  // const toggle = itemID => {
-  //   setLoading(!loading);
-  // };
-
   const handleChange = e => {
     setInput(e.target.value);
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
-    // setLoading(true);
     let cocktail = input;
     const res = await fetch(
       `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktail}`
@@ -56,7 +51,6 @@ function App() {
     const data = await res.json();
     setData(data.drinks);
     setInput("");
-    // setLoading(false);
   };
 
   return (
@@ -198,10 +192,6 @@ function App() {
         />
         <Route path='/ingredient' component={Ingredient} />
         <Route path='/favourites' component={Favourites} />
-        {/* <Route
-          path='/favourites'
-          render={props => <Favourites favs={favourites} />}
-        /> */}
 
         <footer>
           <h6>Powered by TheCocktailDB API</h6>
