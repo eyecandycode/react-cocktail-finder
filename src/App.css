@@ -1,5 +1,4 @@
 * {
-  /* box-sizing: content-box; */
   text-align: center;
   padding: 0;
   margin: 0;
@@ -60,20 +59,12 @@ footer h6 {
   flex-direction: column;
   width: 100vw;
   text-align: center;
-  /* justify-self: center; */
-  /* align-self: center; */
-  /* justify-items: center; */
   justify-content: center;
-  /* justify-self: center;  */
-  /* align-content: center; */
   align-items: center;
-  /* align-self: center; */
   margin-top: 20px;
 }
 
 .cocktails {
-  /* display: flex;
-  flex-direction: column; */
   max-width: 56%;
   padding: 10px;
   margin: 10px;
@@ -92,32 +83,58 @@ footer h6 {
 
 .card .fav-btn {
   position: absolute;
-  /* right: 18px;
-  bottom: 18px; */
   width: 35px;
   height: 35px;
   border-radius: 50%;
   font-size: 28px;
   margin-left: 10px;
   margin-top: 10px;
-  /* padding-left: 10px; */
   background-color: rgb(9, 13, 34);
   color: rgb(245, 245, 245);
 }
 
 .remove-btn {
   position: absolute;
-  /* right: 18px;
-  bottom: 18px; */
   width: 28px;
   height: 28px;
   border-radius: 50%;
   font-size: 12px;
-  /* padding-left: 10px; */
   background-color: white;
   color: blue;
 }
 
 .fav-img {
   height: 30vh;
+}
+
+@media (max-width: 630px) {
+  .cocktails {
+    max-width: 76%;
+    padding: 10px;
+    margin: 10px;
+  }
+  .card {
+    margin: 12px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 460px) {
+  .cocktails {
+    max-width: 86%;
+    padding: 10px;
+    margin: 10px;
+  }
+  .card {
+    margin: 12px;
+    padding: 20px;
+  }
+  .cocktailImg {
+    width: 90%;
+    height: 90%;
+  }
+  .fav-img {
+    width: 90%;
+    height: 90%;
+  }
 }
