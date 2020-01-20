@@ -5,6 +5,3 @@ Uses TheCocktailDB API to display a plethora of drinks. The user queries the dat
 ### Functionality to be added:
 - Search for drink by ingredient (Search.js - currently in the repo, but not integrated into site)
 - Add loading spinner
-
-#### Other to-dos
-- Add live example
