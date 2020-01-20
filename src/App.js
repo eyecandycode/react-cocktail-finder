@@ -55,42 +55,45 @@ function App() {
 
   return (
     <Router>
-      <div className='app'>
+      <div className="app">
         <header>
-          <h1>Cocktail Finder</h1>
+          <h1 style={{ marginBottom: "0.5rem" }}>Cocktail Finder</h1>
           <span>
-            <Link to='/'>Search by Name</Link> |{" "}
+            <Link to="/">Search by Name</Link>&nbsp;&nbsp;
+            <span style={{ color: "rgba(255,255,255,0.6)" }}>|</span>
+            &nbsp;&nbsp;
             {/* <Link to='/ingredient'>Search by Ingredient</Link> |{" "} */}
-            <Link to='/favourites'>Favourites</Link>{" "}
+            <Link to="/favourites">Favourites</Link>{" "}
           </span>
         </header>
         <Route
           exact
-          path='/'
+          path="/"
           render={props => (
-            <div className='page'>
-              <div className='field'>
+            <div className="page">
+              <div className="field">
                 <h2>Search for a cocktail</h2>
                 <br />
                 <form onSubmit={handleSubmit}>
                   <input
+                    style={{ fontSize: "0.86rem" }}
                     placeholder={"Enter..."}
                     value={input}
                     onChange={handleChange}
                   />
-                  <input type='submit' value='Submit' />
+                  <input type="submit" value="Submit" />
                 </form>
-                <div className='cocktails'>
+                <div className="cocktails">
                   <br /> <br />
                   {data
                     ? data.map((item, i) => (
-                        <div key={item.idDrink} className='card'>
+                        <div key={item.idDrink} className="card">
                           <br />
                           <h1>{item.strDrink}</h1>
                           <br />
                           <div>
                             <button
-                              className='fav-btn'
+                              className="fav-btn"
                               onClick={() => {
                                 setItem({
                                   id: item.idDrink,
@@ -131,9 +134,9 @@ function App() {
                             </button>
 
                             <img
-                              className='cocktailImg'
+                              className="cocktailImg"
                               src={item.strDrinkThumb}
-                              alt=''
+                              alt=""
                             />
                           </div>
                           <br />
@@ -190,11 +193,19 @@ function App() {
             </div>
           )}
         />
-        <Route path='/ingredient' component={Ingredient} />
-        <Route path='/favourites' component={Favourites} />
+        <Route path="/ingredient" component={Ingredient} />
+        <Route path="/favourites" component={Favourites} />
 
         <footer>
-          <h6>Powered by TheCocktailDB API</h6>
+          <h6>
+            Made by{" "}
+            <a
+              style={{ color: "white", textDecoration: "none" }}
+              href="https://lab.eyecandycode.com"
+            >
+              EyeCandyCode
+            </a>
+          </h6>
         </footer>
       </div>
     </Router>
