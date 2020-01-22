@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Card from "./Card";
 
 function Favourites(props) {
   const [update, setUpdate] = useState("");
@@ -6,16 +7,10 @@ function Favourites(props) {
   const drinks = JSON.parse(localStorage.getItem("drinks"));
   const favsLS = localStorage.getItem("drinks");
 
-  useEffect(() => {
-    //     if (favsLS && favsLS.length > 15) {
-    //       setFavFav(props.favs);
-    //     }
-  }, []);
-
   const remove = id => {
     setUpdate(id);
     drinks.forEach((drink, index) => {
-      if (id === drink.id) {
+      if (id === drink.idDrink) {
         drinks.splice(index, 1);
       }
     });
@@ -25,67 +20,21 @@ function Favourites(props) {
   return (
     <div className="page">
       <div className="field">
-        <br />
-        <h1>Favourites</h1>
-        <br />
-        <br />
+        <h1 style={{ margin: "1.2rem 0" }}>Favourites</h1>
         <div className="cocktails">
           {drinks.length > 0 ? (
             drinks.map(drink => (
-              <div key={drink.id} className="card">
-                <h2>{drink.name}</h2>
+              <div key={drink.idDrink} className="card">
+                <h2>{drink.strDrink}</h2>
                 <br />
-                <button className="fav-btn" onClick={() => remove(drink.id)}>
+                <button
+                  className="fav-btn"
+                  onClick={() => remove(drink.idDrink)}
+                >
                   X
                 </button>
-                <img className="fav-img" src={drink.image} alt="" />
-                <br />
-                <br />
-                <br />
-                <h4>Ingredients:</h4>
-                <p>
-                  {drink.ingredient1} {drink.measure1}{" "}
-                </p>
-                <p>
-                  {drink.ingredient2} {drink.measure2}{" "}
-                </p>
-                <p>
-                  {drink.ingredient3} {drink.measure3}{" "}
-                </p>
-                <p>
-                  {drink.ingredient4} {drink.measure4}{" "}
-                </p>
-                <p>
-                  {drink.ingredient5} {drink.measure5}{" "}
-                </p>
-                <p>
-                  {drink.ingredient6} {drink.measure6}{" "}
-                </p>
-                <p>
-                  {drink.ingredient7} {drink.measure7}{" "}
-                </p>
-                <p>
-                  {drink.ingredient8} {drink.measure8}{" "}
-                </p>
-                <p>
-                  {drink.ingredient9} {drink.measure9}{" "}
-                </p>
-                <p>
-                  {drink.ingredient10} {drink.measure10}{" "}
-                </p>
-                <p>
-                  {drink.ingredient11} {drink.measure11}{" "}
-                </p>
-                <p>
-                  {drink.ingredient12} {drink.measure12}{" "}
-                </p>
-                <br />
-                <h4>Glass: </h4> <span>{drink.glass}</span>
-                <br />
-                <br />
-                <h4>Instructions:</h4>
-                <p>{drink.instructions}</p>
-                <br /> <br /> <br />
+                <img className="fav-img" src={drink.strDrinkThumb} alt="" />
+                <Card item={drink} />
               </div>
             ))
           ) : (
