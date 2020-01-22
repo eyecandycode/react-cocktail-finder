@@ -3,9 +3,13 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "./App.css";
 import Ingredient from "./components/Ingredient";
 import Favourites from "./components/Favourites";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Card from "./components/Card";
+import Item from "./components/Item";
+import Form from "./components/Form";
 
 function App() {
-  // const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [input, setInput] = useState("");
   const [item, setItem] = useState("");
@@ -13,20 +17,22 @@ function App() {
 
   const favsLS = localStorage.getItem("drinks");
 
+  // On page load get favs from localStorage
   useEffect(() => {
     if (favsLS && favsLS.length > 15) {
       setFavourites(JSON.parse(localStorage.getItem("drinks")).filter(n => n));
     }
   }, []);
 
+  // Handle CRUD - save in localStorage
   useEffect(() => {
     setFavourites(JSON.parse(localStorage.getItem("drinks")));
-    if (!JSON.stringify(favourites).includes(item.id)) {
+    if (!JSON.stringify(favourites).includes(item.idDrink)) {
       setFavourites(favourites => [...favourites, item].filter(n => n));
     } else {
       favourites.forEach((drink, index) => {
         let favs = favourites.filter(n => n);
-        if (item.id === drink.id) {
+        if (item.idDrink === drink.idDrink) {
           favs.splice(index, 1);
           setFavourites(favs);
         }
@@ -56,16 +62,7 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <header>
-          <h1 style={{ marginBottom: "0.5rem" }}>Cocktail Finder</h1>
-          <span>
-            <Link to="/">Search by Name</Link>&nbsp;&nbsp;
-            <span style={{ color: "rgba(255,255,255,0.6)" }}>|</span>
-            &nbsp;&nbsp;
-            {/* <Link to='/ingredient'>Search by Ingredient</Link> |{" "} */}
-            <Link to="/favourites">Favourites</Link>{" "}
-          </span>
-        </header>
+        <Header />
         <Route
           exact
           path="/"
@@ -73,118 +70,31 @@ function App() {
             <div className="page">
               <div className="field">
                 <h2>Search for a cocktail</h2>
-                <br />
-                <form onSubmit={handleSubmit}>
-                  <input
-                    style={{ fontSize: "0.86rem" }}
-                    placeholder={"Enter..."}
-                    value={input}
-                    onChange={handleChange}
-                  />
-                  <input type="submit" value="Submit" />
-                </form>
+                <Form
+                  handleSubmit={handleSubmit}
+                  handleChange={handleChange}
+                  input={input}
+                />
                 <div className="cocktails">
-                  <br /> <br />
                   {data
                     ? data.map((item, i) => (
                         <div key={item.idDrink} className="card">
-                          <br />
-                          <h1>{item.strDrink}</h1>
-                          <br />
+                          <h1 style={{ margin: "1rem 0 1.6rem 0" }}>
+                            {item.strDrink}
+                          </h1>
                           <div>
-                            <button
-                              className="fav-btn"
-                              onClick={() => {
-                                setItem({
-                                  id: item.idDrink,
-                                  name: item.strDrink,
-                                  image: item.strDrinkThumb,
-                                  glass: item.strGlass,
-                                  instructions: item.strInstructions,
-                                  ingredient1: item.strIngredient1,
-                                  ingredient2: item.strIngredient2,
-                                  ingredient3: item.strIngredient3,
-                                  ingredient4: item.strIngredient4,
-                                  ingredient5: item.strIngredient5,
-                                  ingredient6: item.strIngredient6,
-                                  ingredient7: item.strIngredient7,
-                                  ingredient8: item.strIngredient8,
-                                  ingredient9: item.strIngredient9,
-                                  ingredient10: item.strIngredient10,
-                                  ingredient11: item.strIngredient11,
-                                  ingredient12: item.strIngredient12,
-                                  measure1: item.strMeasure1,
-                                  measure2: item.strMeasure2,
-                                  measure3: item.strMeasure3,
-                                  measure4: item.strMeasure4,
-                                  measure5: item.strMeasure5,
-                                  measure6: item.strMeasure6,
-                                  measure7: item.strMeasure7,
-                                  measure8: item.strMeasure8,
-                                  measure9: item.strMeasure9,
-                                  measure10: item.strMeasure10,
-                                  measure11: item.strMeasure11,
-                                  measure12: item.strMeasure12
-                                });
-                              }}
-                            >
-                              {JSON.stringify(favourites).includes(item.idDrink)
-                                ? "X"
-                                : "+"}
-                            </button>
-
+                            <Item
+                              setItem={setItem}
+                              item={item}
+                              favourites={favourites}
+                            ></Item>
                             <img
                               className="cocktailImg"
                               src={item.strDrinkThumb}
                               alt=""
                             />
                           </div>
-                          <br />
-                          <br />
-                          <h4>Ingredients:</h4>
-                          <p>
-                            {item.strIngredient1} {item.strMeasure1}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient2} {item.strMeasure2}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient3} {item.strMeasure3}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient4} {item.strMeasure4}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient5} {item.strMeasure5}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient6} {item.strMeasure6}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient7} {item.strMeasure7}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient8} {item.strMeasure8}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient9} {item.strMeasure9}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient10} {item.strMeasure10}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient11} {item.strMeasure11}{" "}
-                          </p>
-                          <p>
-                            {item.strIngredient12} {item.strMeasure12}{" "}
-                          </p>
-                          <br />
-                          <h4>Glass: </h4> <span>{item.strGlass}</span>
-                          <br />
-                          <br />
-                          <h4>Instructions:</h4>
-                          <p>{item.strInstructions}</p>
-                          <br /> <br /> <br />
+                          <Card item={item} />
                         </div>
                       ))
                     : ""}
@@ -196,17 +106,7 @@ function App() {
         <Route path="/ingredient" component={Ingredient} />
         <Route path="/favourites" component={Favourites} />
 
-        <footer>
-          <h6>
-            Made by{" "}
-            <a
-              style={{ color: "white", textDecoration: "none" }}
-              href="https://lab.eyecandycode.com"
-            >
-              EyeCandyCode
-            </a>
-          </h6>
-        </footer>
+        <Footer />
       </div>
     </Router>
   );
